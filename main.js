@@ -1,12 +1,26 @@
+
+
+
+
+
+
+
+
+
+
+
+
 const toggleButton = document.getElementsByClassName('toggle-button')[0]
 const navbarLinks = document.getElementsByClassName('navbar-links')[0]
 let mainWrapper = document.getElementsByClassName("mainwrapper")[0]
 const largeCards = document.getElementsByClassName("largeCard")
+const title = document.getElementsByClassName("title")
+
 let leftArrow = document.querySelector(".leftbutton")
 let rightArrow = document.querySelector(".rightbutton")
 let testButton = document.querySelector(".test")
 let levelA1 = document.getElementsByClassName("levelA1")[0]
-
+let levelA2 = document.querySelector(".levelA2")
 
 // set up default arrows 
 leftArrow.style.display ="none"
@@ -21,8 +35,6 @@ for (let i = 0; i < largeCards.length; i++) {
 }
 
 
-
-
 toggleButton.addEventListener('click', () => {
   navbarLinks.classList.toggle('active')
 })
@@ -30,6 +42,7 @@ toggleButton.addEventListener('click', () => {
 
 //  Default main screen settings
 levelA1.style.display = "none"
+levelA2.style.display = "none"
 
 
 testButton.addEventListener('click', function(){
@@ -40,15 +53,77 @@ levelA1.style.display ="grid"
 
 
 
-
-
-
 const courselDisplay = (cardID) => {
 
 
-  largeCards[cardID].style.display ="block"
+  largeCards[cardID].style.display ="grid"
   
+  let newPic = title[cardID].textContent
+
+   async function displayImage () {
+    let randomImage = await getNewImage();
+    imageToDisplay[cardID].src = randomImage;
+
+   }
+
+
+   const nextImageButton = document.querySelector(".nextimage")
+ 
+let increment = 0
+nextImageButton.addEventListener('click', () => {
+
+increment ++ 
+
+displayNextImage()
+
+  async function displayNextImage () {
+    let randomImage = await getNextPic();
+    imageToDisplay[cardID].src = randomImage;
+
+   }
+
+
+  async function getNextPic () {
+  
+    return fetch(imageURL)
+      .then((response) => response.json())
+      .then((data) => {
+       return data.results[increment].urls.small
+      });
   }
+  
+});
+
+
+
+
+  const imageURL = "https://api.unsplash.com/search/photos?query="+ newPic +"&client_id=2RxezYczgkbQsXocwm29iQ88Br5M0YGGsEpQke_s3lM"
+  const getImagesButton = document.querySelector('.getImagesButton');
+  const imageToDisplay = document.getElementsByClassName('imagebox2');
+
+  rightArrow.addEventListener('click', () => {
+   
+    displayImage()
+  });
+
+
+  displayImage()
+
+
+async function getNewImage () {
+  
+    return fetch(imageURL)
+      .then((response) => response.json())
+      .then((data) => {
+       return data.results[0].urls.small
+      });
+  }
+
+   
+
+
+}
+  
   
 const clearPreviousCard = (previousCard) =>{
 
@@ -64,14 +139,44 @@ for (let i = 0; i < startButton.length; i++) {
 
   startButton[i].id = i
 
-startButton[i].onclick = function (e) {
-  
-  
   // subContainer wraps all of the lesson cards
-  let subContainer = document.querySelector(".subcontainer")
+  let subContainer = document.getElementsByClassName("subcontainer")
   let activeCard = 0 
+
+  startButton[i].onclick = function (e) {
+
+  if (e.target.id == 0){
+
+    levelA1.style.display= "block"
+    levelA2.style.display = "none"
+    
+    subContainer[0].style.display ="none"
+    subContainer[1].style.display = "none"
+
+ 
   
-  subContainer.style.display = "none"
+  courselDisplay(activeCard)
+
+
+  }
+
+
+  if (e.target.id == 1){
+ 
+    levelA1.style.display= "none"
+    levelA2.style.display = "block"
+    
+    subContainer[0].style.display ="none"
+    subContainer[1].style.display = "none"
+  
+    activeCard = 10
+  
+  courselDisplay(activeCard)
+  }
+
+
+  subContainer[0].style.display ="none"
+   subContainer[1].style.display = "none"
   
    leftArrow.style.display ="block"
    rightArrow.style.display ="block"
@@ -95,79 +200,7 @@ startButton[i].onclick = function (e) {
 
   })
 
-
   
   }
 
 }
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-const requestUrl =
-      'https://api.unsplash.com/search/photos?query=yard&client_id=2RxezYczgkbQsXocwm29iQ88Br5M0YGGsEpQke_s3lM';
-    const getImagesButton = document.querySelector('.getImagesButton');
-    const imageToDisplay = document.querySelector('.imageToDisplay');
-
-    getImagesButton.addEventListener('click', async () => {
-    
-      let randomImage = await getNewImage();
-      imageToDisplay.src = randomImage;
-    });
-
-    async function getNewImage() {
-    
-      return fetch(requestUrl)
-        .then((response) => response.json())
-        .then((data) => {
-          let image = data.results[0];
-          return image.urls.small;
-        });
-    }
-
-
-*/ 
-
-
-/*
-let word = {
-  apiKey: "cf24836904b630625a0cf302dfe09cac", 
-   fetchword: function (word) {
-     fetch
-     ("https://api.dictionaryapi.dev/api/v2/entries/en/"+ word + ""
-   )
-   .then((response) => {
-     if (!response.ok) {
-       alert("No word found");
-       throw new Error("No word found.");
-     }
-     return response.json();
-   })
-   .then((data) => console.log(data));
-},
-
-}
-
-word.fetchword("chair")
-
-*/
