@@ -1,33 +1,23 @@
-/*
 
 
-const requestUrl =
-      'https://api.unsplash.com/search/photos?query=yard&client_id=2RxezYczgkbQsXocwm29iQ88Br5M0YGGsEpQke_s3lM';
-    const getImagesButton = document.querySelector('.getImagesButton');
-    const imageToDisplay = document.querySelector('.imageToDisplay');
-
-    getImagesButton.addEventListener('click', async () => {
-    
-      let randomImage = await getNewImage();
-      imageToDisplay.src = randomImage;
-    });
-
-    async function getNewImage() {
-    
-      return fetch(requestUrl)
-        .then((response) => response.json())
-        .then((data) => {
-          let image = data.results[0];
-          return image.urls.small;
-        });
-    }
 
 
-*/ 
+
+
+
+
 
 
 /*
-let word = {
+
+const title = document.getElementsByClassName("title")
+  
+
+  
+
+
+
+export let audioAPI = {
   apiKey: "cf24836904b630625a0cf302dfe09cac", 
    fetchword: function (word) {
      fetch
@@ -40,11 +30,49 @@ let word = {
      }
      return response.json();
    })
-   .then((data) => console.log(data));
+   .then((data) => play(data[0].phonetics[0].audio));
 },
 
 }
 
-word.fetchword("chair")
+// initial 
+ export async function displayImage () {
+  let randomImage = await getNewImage();
+  imageToDisplay[cardID].src = randomImage;
+
+ }
+
+
+ // cycle through images
+ export async function displayNextImage () {
+  let randomImage = await getNextPic();
+  imageToDisplay[cardID].src = randomImage;
+
+ }
+
+
+
+ // to cycle through the different images
+export async function getNextPic () {
+  
+  let newPic = title[cardID].textContent
+  const imageURL = "https://api.unsplash.com/search/photos?query="+ newPic +"&client_id=2RxezYczgkbQsXocwm29iQ88Br5M0YGGsEpQke_s3lM"
+  return fetch(imageURL)
+    .then((response) => response.json())
+    .then((data) => {
+     return data.results[increment].urls.small
+    });
+}
+
+// for initial image
+export async function getNewImage () {
+  let newPic = title[cardID].textContent
+  const imageURL = "https://api.unsplash.com/search/photos?query="+ newPic +"&client_id=2RxezYczgkbQsXocwm29iQ88Br5M0YGGsEpQke_s3lM"
+  return fetch(imageURL)
+    .then((response) => response.json())
+    .then((data) => {
+     return data.results[0].urls.small
+    });
+}
 
 */
