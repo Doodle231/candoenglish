@@ -106,7 +106,7 @@ import {
 
 
         let logIn = document.querySelector(".login")
-       
+        let welcomeText = document.querySelector(".welcome")
          logIn.addEventListener('click',(e) =>{
              e.preventDefault()
 
@@ -115,7 +115,8 @@ import {
 
           signInWithEmailAndPassword(auth,email, password)
                .then((cred) =>{
-                   console.log("user logged in")
+                   welcomeText.textContent = "Hello " + email
+                console.log("user logged in")
                 })
                 .catch((err) =>{
 

@@ -1,10 +1,14 @@
 const toggleButton = document.getElementsByClassName('toggle-button')[0]
 const navbarLinks = document.getElementsByClassName('navbar-links')[0]
-
+let definition = document.getElementsByClassName("definition")
 let leftArrow = document.querySelector(".leftbutton")
 let rightArrow = document.querySelector(".rightbutton")
 const largeCards = document.getElementsByClassName("largeCard")
 const title = document.getElementsByClassName("title")
+const imageToDisplay = document.getElementsByClassName('imagebox2');
+
+leftArrow.style.display ="none"
+rightArrow.style.display ="none"
 
 // clear out large card displays
 for (let i = 0; i < largeCards.length; i++) {
@@ -14,29 +18,51 @@ for (let i = 0; i < largeCards.length; i++) {
    }
 
    const courselDisplay = (cardID) => {
-
+    leftArrow.style.display ="block"
+    rightArrow.style.display ="block"
     largeCards[cardID].style.display ="grid"
     
+    console.log(cardID)
   if (cardID === 12){
+    
+    
+
+     
     launchQuiz()
-    return
+   return
   }
   
   const audioButton = document.getElementsByClassName("vocabaudio")
   
-  audioButton[cardID].addEventListener('click', () => {
   
-  word.fetchword(newAudio)
-  
-  })
-  
+    
     let newPic = title[cardID].textContent
-    let newAudio = title[cardID].textContent
-  
+    let wordAndAudio = title[cardID].textContent
+
+
+
     function play(source) {
-      var audio = new Audio(""+ source + "");
+      
+      let newDef = source.meanings[0].definitions[0].definition
+     
+      definition[cardID].textContent = newDef
+       
+      rightArrow.addEventListener('click', function(){
+        definition[cardID].textContent = newDef
+      })
+
+      
+      audioButton[cardID].addEventListener('click', () => {
+  
+        var audio = new Audio(""+ source.phonetics[0].audio + "");
       audio.play();
+        
+        })
+
     }
+
+
+    
   
     let word = {
       apiKey: "cf24836904b630625a0cf302dfe09cac", 
@@ -51,51 +77,65 @@ for (let i = 0; i < largeCards.length; i++) {
          }
          return response.json();
        })
-       .then((data) => play(data[0].phonetics[0].audio));
+       .then((data) => play(data[0]));
     },
     
     }
     
-    word.fetchword(newAudio)
+    word.fetchword(wordAndAudio)
   
      async function displayImage () {
       let randomImage = await getNewImage();
       imageToDisplay[cardID].src = randomImage;
   
      }
-     const nextImageButton = document.querySelector(".nextimage")
+     
+     
    
   let increment = 0
-  nextImageButton.addEventListener('click', () => {
+
+
+
+  const nextImageButton = document.getElementsByClassName("nextimage")
   
-  increment ++ 
+  for (let i = 0; i < nextImageButton.length; i++) {
+
+    nextImageButton[i].addEventListener('click', () => {
   
-  displayNextImage()
-  
-    async function displayNextImage () {
-      let randomImage = await getNextPic();
-      imageToDisplay[cardID].src = randomImage;
-  
-     }
-  
-  
-    async function getNextPic () {
+      increment ++ 
+      
+      displayNextImage()
+      
+        async function displayNextImage () {
+          let randomImage = await getNextPic();
+          imageToDisplay[cardID].src = randomImage;
+          
+         }
+      
     
-      return fetch(imageURL)
-        .then((response) => response.json())
-        .then((data) => {
-         return data.results[increment].urls.small
-        });
-    }
-    
-  });
+        async function getNextPic () {
+        
+          return fetch(imageURL)
+            .then((response) => response.json())
+            .then((data) => {
+             return data.results[increment].urls.small
+            });
+        }
+        
+      });
+
+
+
+  }
+
+ 
   
     const imageURL = "https://api.unsplash.com/search/photos?query="+ newPic +"&client_id=2RxezYczgkbQsXocwm29iQ88Br5M0YGGsEpQke_s3lM"
     const getImagesButton = document.querySelector('.getImagesButton');
     const imageToDisplay = document.getElementsByClassName('imagebox2');
   
     rightArrow.addEventListener('click', () => {
-     
+
       displayImage()
     });
   
@@ -165,6 +205,7 @@ function displayClickedCard (){
    leftArrow.style.display ="block"
    rightArrow.style.display ="block"
    
+   // to update new image
    rightArrow.addEventListener('click', function(){
 
     activeCard ++;
@@ -176,7 +217,7 @@ function displayClickedCard (){
 
   
   leftArrow.addEventListener('click', function(){
-  
+
     activeCard --;
     let previousCard = activeCard +1 
      courselDisplay(activeCard)
@@ -197,8 +238,17 @@ displayClickedCard()
 /// flashcard quiz 
 
 function launchQuiz(){
+ 
+ leftArrow.style.display = "none"
+ rightArrow.style.display = "none"
+ for (let i = 0; i < imageToDisplay.length; i++){
+  imageToDisplay[i].style.display = "none"
+ }
+ 
+
+
+ 
   console.log("hey")
 }
-
 
 
