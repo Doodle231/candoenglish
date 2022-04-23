@@ -244,12 +244,12 @@ position:fixed;
 
 
 .largeCard {
-    
+    background-color: orange;
     display:grid; 
     width:100vw; 
     height:100vh; 
-    grid-template-columns: repeat(5,20%);
-    grid-template-rows: repeat(5,20%);
+    grid-template-columns: repeat(5,1fr);
+    grid-template-rows: repeat(5,1fr);
 }
 
 .imagebox {
@@ -308,11 +308,59 @@ position:fixed;
   
 }
 
-.quiz { 
-    background-color: orange;
-    width:100%; 
-    height:100%;
+
+.quiz {
+  width:100vw; 
+  height:100vh; 
+  background-color: rgb(236, 118, 8);
+  display:block;
 }
+
+.quizheader{
+    background-color: rgb(8, 61, 236);
+    margin-left: 20%;
+    width:50%;
+    border:5px solid black;
+    text-align: center;
+}
+
+
+.testbutton{
+    width:100%; 
+    height: 35%;
+}
+
+.testbuttons {
+    background-color:rgb(0, 255, 85); 
+    z-index: 121;
+    height:20%; 
+    width:50%;
+    margin-left: 20%;
+
+
+}
+
+.testbutton:hover {
+    background-color: rgb(101, 175, 126); 
+
+}
+
+
+.question{
+  height:10%;
+  background-color: rgb(8, 61, 236);
+  font-size: 5rem;
+  width:35%; 
+  margin-left: 25%;
+  margin-top: 10%;
+  margin-bottom:5%; 
+  text-align: center;
+   border-radius: 60px;
+   
+
+}
+
+
 
 @media (max-width: 480px){
     
