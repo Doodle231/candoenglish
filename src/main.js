@@ -1,13 +1,16 @@
 
 import { initializeApp } from 'firebase/app';
-import {getFirestore, collection, getDocs,addDoc } from "firebase/firestore"
-
+import { onSnapshot,getFirestore, collection,  getDocs, addDoc, doc, getDoc, updateDoc, setDoc} from "firebase/firestore"
+                                             
 import {
     getAuth,
     createUserWithEmailAndPassword,
     signOut,
-    signInWithEmailAndPassword
+    signInWithEmailAndPassword, 
+    onAuthStateChanged
 } from "firebase/auth"
+
+
 
 
     const firebaseConfig = {
@@ -20,8 +23,12 @@ import {
         measurementId: "G-T1KVTXP3GZ"
       };
 
-
+      initializeApp(firebaseConfig)
       const app = initializeApp(firebaseConfig);
+
+    const databaseButton = document.querySelector(".database")
+    
+      let welcomeText = document.querySelector(".welcome")
 
 
       const auth = getAuth(app);
@@ -29,40 +36,141 @@ import {
       const db = getFirestore()
       const colRef = collection(db,"Users")
 
-      // get data from database
+
+      export const sessionUserInfo = []
+   
+
+    
+
+     /*
+      getDocs(colRef)
+      .then ((snapshot) =>{
+
+          snapshot.docs.forEach((doc) => {
+          
+           sessionUserInfo.push({...doc.data(), id:doc.id})
+           console.log(sessionUserInfo)
+      })
+      
+      
+
+    })
+*/
+    
+      databaseButton.addEventListener('click', () => {
+
+      
+
+      })
+    
+
+
+/*
+     
+
+
+
+   
+ 
+
+  */
+
+
+
+  
+
+
+
+
+
+
+  /*
+
+    updateDoc(docRef, {
+      Trophy1:true
+     })
+      .then(() =>{
+
+     
+    })
+
+*/
+   
+/*
+    onSnapshot(colRef , (snapshot) =>{
+      let users = []
+      snapshot.docs.forEach((doc) =>{
+      users.push({... doc.data(), id:doc.id})
+      })
+      console.log(users)
+    })
+    */
+   
+
+///updateDoc()
+   
+      /*
       async function getCities(db) {
         const citiesCol = collection(db, 'Users');
         const citySnapshot = await getDocs(citiesCol);
         const cityList = citySnapshot.docs.map(doc => doc.data());
-       console.log(cityList[1].Age)
+      return cityList
       }
 
-    
+    getCities()
 
 
-      
-      // add new user at signup
+
+
+*/
+
+
+
+     
 
       const signupForm = document.querySelector(".signupp")
+      console.log(signupForm)
+
+
        signupForm.addEventListener('submit',(e) =>{
            e.preventDefault()
             const email = signupForm.email.value
             const password = signupForm.password.value
-
+           
            createUserWithEmailAndPassword(auth,email, password)
            .then((cred)=> {
-             const user = cred.user
-             console.log(user)
-             addDoc(colRef, {
+         
+            const newUser = cred.user
+             console.log(newUser)
+             setDoc(doc(colRef, email),{
 
-              Name:user.email,
-              Trophy1:false, 
-              Trophy2:false,
-        
+              Name:newUser.email,
+              flashcardgrades:{
+                chapter1:null, 
+                chapter2:null, 
+                chaper3:null,
+                chapter4:null, 
+                chapter5:null, 
+                chaper6:null,
+                chapter7:null, 
+                chapter8:null, 
+                chaper9:null,
+                chapter10:null, 
+                chapter11:null, 
+                chaper12:null,
+              
+              },
+
 
               })
              
+               
+              
+
+
              signupForm.reset()
+             welcomeText.textContent = "welcome " + newUser.email
+             
            })
            .catch((err) =>{
                
@@ -104,19 +212,32 @@ import {
          })
 
 
+         console.log("running")
+
+
 
         let logIn = document.querySelector(".login")
-        let welcomeText = document.querySelector(".welcome")
+        
          logIn.addEventListener('click',(e) =>{
              e.preventDefault()
 
           const email = logIn.email.value
           const password = logIn.password.value
-
+           
           signInWithEmailAndPassword(auth,email, password)
                .then((cred) =>{
                    welcomeText.textContent = "Hello " + email
-                console.log("user logged in")
+                   //console.log(auth.currentUser)
+                   const docRef = doc(db, "Users", email)
+                   
+
+                  
+                   getDoc(docRef)
+                   .then((doc) => {
+                   sessionUserInfo.push(doc.data())
+                   console.log(sessionUserInfo[0].flashcardgrades)
+                   })
+
                 })
                 .catch((err) =>{
 
@@ -125,9 +246,16 @@ import {
                 })
          })
 
-    ///////////////////////////////////////////
+         onAuthStateChanged(auth, (user) => {
+          if (user) {
+            let thisUser = []
+           thisUser.push(user.email)
+           console.log(thisUser)
+           
+          }
+          else {
+            
+          }
+        });
 
-
-
-
-
+     

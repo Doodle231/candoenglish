@@ -360,7 +360,24 @@ position:fixed;
 
 }
 
+.quizresult{
+    width:40%; 
+    height:50%; 
+    background-color: lightblue;
+    margin-left: 25%;
 
+
+}
+
+.grade{
+    font-size: 5rem;
+    color:green; 
+    margin-left: 70%;
+}
+
+.correctnumber{
+    margin-left: 25%;
+}
 
 @media (max-width: 480px){
     

@@ -1,3 +1,38 @@
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"
+import { onSnapshot,getFirestore, collection,  getDocs, addDoc, doc, getDoc, updateDoc} from "https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore.js"
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signOut,
+  signInWithEmailAndPassword, 
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/9.6.11/firebase-auth.js"
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC8uZQu7mFSQrTmGS2DH_ayRl9Ga7kEl9E",
+  authDomain: "candoenglish-3ee84.firebaseapp.com",
+  projectId: "candoenglish-3ee84",
+  storageBucket: "candoenglish-3ee84.appspot.com",
+  messagingSenderId: "901983334361",
+  appId: "1:901983334361:web:c58afc2ebbb658c348b3c8",
+  measurementId: "G-T1KVTXP3GZ"
+};
+
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore()
+const auth = getAuth(app);
+const user = auth.currentUser;
+
+
+initializeApp(firebaseConfig)
+
+
+
 const toggleButton = document.getElementsByClassName('toggle-button')[0]
 const navbarLinks = document.getElementsByClassName('navbar-links')[0]
 let definition = document.getElementsByClassName("definition")
@@ -9,12 +44,46 @@ const imageToDisplay = document.getElementsByClassName('imagebox2');
 let subContainer = document.getElementsByClassName("subcontainer")
 let question = document.querySelector(".question")
 let quizActive = false; 
+let quizResult = document.querySelector(".quizresult")
+quizResult.style.display = "none"
+let returnButton = document.querySelector(".returnbutton")
+
+
+let badges = document.getElementsByClassName("badges")
+
+
+
 
 // store for quiz 
 let QuizDefinitions = []
 
-let numberOfCorrect = 0
-let numberofIncorrect = 0 
+  
+  
+
+
+
+/*
+
+
+
+ 
+getDoc(docRef)
+.then((doc) => {
+sessionID.push(doc.data())
+console.log(sessionID[0])
+})
+
+
+
+
+*/
+
+
+
+
+
+
+
 
 
  function quiz () {
@@ -23,7 +92,24 @@ let numberofIncorrect = 0
   randomNumber: Math.floor(Math.random() * 6) ,
   smallRandom:Math.floor(Math.random() * 3) ,
   availableWords: [],
+  correctAnswers:0,
+  incorrectAnswers:0, 
+  quizGrades: {
+   chapter1:null, 
+   chapter2:null, 
+   chapter3:null, 
+   chapter4:null, 
+   chatter5:null, 
+   chapter6:null, 
+   chapter7:null, 
+   chapter8:null, 
+   chapter9:null, 
+   chatter10:null, 
+   chapter11:null, 
+   chatter12:null, 
 
+
+  },
 
 
 start (){
@@ -31,21 +117,14 @@ start (){
   this.initDisplays()
 this.updateQuestion()
 this.answerEventHandlers()
-
+this.displayQuizResult()
   
-},
-
-initialQuestion ()
-{
-
-
-
 },
 
 updateQuestion ()
 {
   this.randomNumber = Math.floor(Math.random() * 6) 
-  console.log(this.randomNumber)
+
   
   this.availableWords =  QuizDefinitions.filter(function (word){
 
@@ -98,16 +177,30 @@ updateQuestion ()
  
   answerEventHandlers (){
 
-
+   
+    
     const addAnswerClickHandlers = (index) => {
  
       document.getElementsByClassName("testbutton")[index].addEventListener('click', (e) => {
         if (e.target.id === question.textContent){
-          numberOfCorrect += 1 
+          
+          this.correctAnswers += 1
+
           this.updateQuestion()
+           
+          this.displayQuizResult()
           QuizDefinitions[this.randomNumber].available ="no"
          
+        
+        } else {
+          this.incorrectAnswers += 1 
+          this.updateQuestion()
+         this.displayQuizResult()
+        
+          QuizDefinitions[this.randomNumber].available ="no"
         }
+    
+            
       })
     }
     
@@ -129,8 +222,8 @@ updateQuestion ()
       let dButton = document.getElementsByClassName("testbutton")[3]
 
 
-      this.smallRandom = Math.floor(Math.random() * 3)
-      console.log(this.smallRandom)
+      this.smallRandom = Math.floor(Math.random() * 4)
+     
  
     if (this.smallRandom === 4){
 
@@ -190,11 +283,101 @@ dButton.id = QuizDefinitions[10].vocab
 
     },
   
+
+ displayQuizResult (){
+
+  console.log("correct " + this.correctAnswers)
+  console.log("incorrect "+ this.incorrectAnswers)
+ 
+
+   if (this.correctAnswers + this.incorrectAnswers === 5){
+    
+     quizResult.style.display = "block"
+     
+     let answerButtons = document.querySelector(".testbuttons")
+     let quizHeader = document.querySelector(".quizheader")
+     
+     let correctText = document.querySelector(".correctnumber")
+     let incorrectText = document.querySelector(".incorrectnumber")
+     
+     answerButtons.style.display = "none"
+     question.style.display ="none"
+     quizHeader.textContent = "Your quiz result is..."
+     let totalAnswers = this.correctAnswers + this.incorrectAnswers
+    
+     correctText.textContent = this.correctAnswers + " / " + totalAnswers + " correct "
+    
+     let percent = parseInt(this.correctAnswers / totalAnswers *100)
+   
+
+     console.log(percent)
+     let grade = document.querySelector(".grade")
+     grade.style.display ="block"
+     
+     
+     if (percent >= 90){
+      grade.textContent = "A"
+     }
+
+     if (percent >= 80 && percent < 90 ){
+       grade.textContent = "B"
+     }
+
+     if (percent >= 70 && percent < 80 ){
+      grade.textContent = "C"
+    }
+
+    if (percent >= 60 && percent < 70 ){
+      grade.textContent = "D"
+    }
+
+    if (percent <60 ){
+      grade.textContent = "F"
+    }
+    
+    this.quizGrades.chapter1 = grade.textContent
+     console.log(this.quizGrades)
+    
+     badges[0].textContent = this.quizGrades.chapter1
+    
+  
+     this.updateDisplays()
   }
 
+},
+
+
+   updateDisplays (){
+
+
+    onAuthStateChanged(auth, (user) => {
+    
+    
+      let startButton = document.getElementsByClassName("startbutton")[0]
+      if (user) {
+        console.log("logged in")
+         this.sessionID = user.email
+         startButton.style.backgroundColor = "green"
+         const docRef = doc(db, "Users", user.email)
+    
+         updateDoc(docRef, {
+           chapter1Grade:this.quizGrades.chapter1
+           }).then(() =>{
+           
+           })
+      }
+      else {
+       console.log("no user logged in")
+       startButton.style.backgroundColor = "red";
+      }
+    });
+
+    
+   }
+
+}
+
  }
-
-
 
 const quiz1 = quiz()
 
@@ -458,6 +641,11 @@ function displayClickedCard (cardID){
 displayClickedCard()
 
 
-/// flashcard quiz 
+returnButton.addEventListener('click', function(){
 
+  quizResult.style.display = "none"
+  subContainer[0].style.display ="grid"
+
+
+})
 
